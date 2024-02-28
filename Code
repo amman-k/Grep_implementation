@@ -1,0 +1,107 @@
+import re
+
+def search_basic(file_path, pattern):
+    found = False
+    with open(file_path, 'r') as file:
+        for line in file:
+            if re.search(pattern, line):
+                found = True
+                print("Pattern found")
+                break
+    if not found:
+        print("Pattern not found")
+
+def grep(file_path, pattern, case_sensitive=False, line_numbers=True, count_only=False):
+    flags = re.IGNORECASE if not case_sensitive else 0
+    found = False
+    count = 0 
+    with open(file_path, 'r') as f:
+        for line_number, line in enumerate(f, start=1):
+            if re.search(pattern, line, flags=flags):
+                found = True
+                count += 1
+                if not count_only:
+                    if line_numbers:
+                        print(f"Line Number: {line_number}")
+                        print(line.strip())
+    if not found:
+        print("Pattern not found")
+    elif count_only:
+        print(f"Total matching lines: {count}")
+
+
+def invert_match(file_path,pattern,count_only=False):
+
+    found=False
+    count=0
+    with open(file_path,'r') as f:
+        for line_number, line in enumerate(f, start=1):
+            if re.search(pattern, line) is None:
+                found = True
+                count += 1
+                if not count_only:
+                    
+                    print(f"Line Number: {line_number}")
+                    print(line.strip())
+    if not found:
+        print("Pattern found in all lines") 
+    elif count_only:
+        print(f"Total non-matching lines: {count}")
+
+def word_match(file_path,pattern,count_only=False):
+    found=False
+    count=0
+    rPattern=r'\b{}\b'.format(re.escape(pattern))
+    with  open(file_path,'r') as f:
+        for line_number,line in enumerate(f,start=1):
+            if re.search(rPattern,line):
+                found=True
+                count+=1
+                if not count_only:
+                    printf(f"Line NUmber:{line_number}")
+                    printf(line.strip())
+    if not found:
+        print("No Whole Words")
+    elif count_only:
+        print(f"Total matching lines: {count} ")
+
+
+
+
+
+
+
+
+
+# file_path = '/Users/amman/Downloads/WINSEM2023-24_BENG101L_TH_VL2023240502061_2024-01-09_Reference-Material-I.txt'
+file_path=input("Enter the path of the file")
+
+print("Enter the choice of search")
+print("1) Basic Search")
+print("2) Search within a given range (REGEX)")
+print("3) Search within a given range (REGEX) (CASE SENSITIVE)")
+print("4) Invert Search")
+print("5) Whole Word Search")
+choice = int(input("Enter your choice: "))
+
+if choice == 1:
+    pattern = input("Enter the pattern you want to search: ")
+    search_basic(file_path, pattern)
+elif choice == 2:
+    pattern = input("Enter a Regex Expression: ")
+    count_only = input("Display only count of matching lines? (yes/no): ").lower() == "yes"
+    grep(file_path, pattern, count_only=count_only)
+elif choice == 3:
+    pattern = input("Enter a Regex Expression: ")
+    count_only = input("Display only count of matching lines? (yes/no): ").lower() == "yes"
+    grep(file_path, pattern, case_sensitive=True, count_only=count_only)
+elif choice==4:
+    pattern=input("Enter a Regex Expression:  ")
+    count_only = input("Display only count of matching lines? (yes/no): ").lower() == "yes"
+    invert_match(file_path,pattern,count_only=count_only)
+elif choice==5:
+    pattern=input("Enter a Word: ")
+    count_only = input("Display only count of matching lines? (yes/no): ").lower() == "yes"
+    word_match(file_path,pattern,count_only=count_only)
+else:
+    print("Invalid input")
